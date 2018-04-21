@@ -81,6 +81,12 @@
                                                         (- *viewport-height* (parse-number y)))
                                   :width (parse-number width)
                                   :height (parse-number height))))
+         ("line" (destructuring-bind (&key x1 y1 x2 y2 &allow-other-keys) object
+                   (make-instance 'line-obstacle
+                                  :origin (gamekit:vec2 (parse-number x1)
+                                                        (- *viewport-height* (parse-number y1)))
+                                  :end (gamekit:vec2 (parse-number x2)
+                                                     (- *viewport-height* (parse-number y2))))))
          ("ellipse" (destructuring-bind (&key cx cy rx ry &allow-other-keys) object
                       (make-instance 'ellipse-obstacle
                                      :origin (gamekit:vec2 (parse-number cx)
