@@ -6,6 +6,8 @@
   :mailto "dev@borodust.org"
   :depends-on (alexandria parse-number cl-svg-polygon
                           trivial-gamekit cl-bodge/physics/2d cl-bodge/physics)
+  :pathname "src/"
   :serial t
   :components ((:file "packages")
+               (:file "level")
                (:file "ball-z")))
