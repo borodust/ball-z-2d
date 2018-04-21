@@ -1,0 +1,13 @@
+<svg width="640" height="480" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+ <!-- Created with SVG-edit - http://svg-edit.googlecode.com/ -->
+ <g>
+  <title>Layer 1</title>
+  <line fill="none" stroke="#000000" stroke-width="5" x1="152" y1="162" x2="256" y2="113" id="svg_2"/>
+  <line fill="none" stroke="#000000" stroke-width="5" x1="303" y1="131" x2="380" y2="173" id="svg_3"/>
+  <line fill="none" stroke="#000000" stroke-width="5" x1="364" y1="233" x2="301" y2="261" id="svg_4"/>
+  <line fill="none" stroke="#000000" stroke-width="5" x1="370" y1="307" x2="528" y2="330" id="svg_5"/>
+  <rect fill="none" stroke="#000000" stroke-width="5" x="429" y="65" width="174" height="96" id="svg_6"/>
+  <ellipse fill="none" stroke="#000000" stroke-width="5" cx="107" cy="416" id="svg_7" rx="79" ry="23"/>
+  <path fill="none" stroke="#000000" stroke-width="5" d="m40,288c93,0 194,127 193,53c-1,-74 121,16 122,44l1,28" id="svg_8"/>
+ </g>
+</svg>
