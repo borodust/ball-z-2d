@@ -1,13 +1,8 @@
 <svg width="640" height="480" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
- <!-- Created with SVG-edit - http://svg-edit.googlecode.com/ -->
  <g>
   <title>Layer 1</title>
-  <line fill="none" stroke="#000000" stroke-width="5" x1="152" y1="162" x2="256" y2="113" id="svg_2"/>
-  <line fill="none" stroke="#000000" stroke-width="5" x1="303" y1="131" x2="380" y2="173" id="svg_3"/>
-  <line fill="none" stroke="#000000" stroke-width="5" x1="364" y1="233" x2="301" y2="261" id="svg_4"/>
-  <line fill="none" stroke="#000000" stroke-width="5" x1="370" y1="307" x2="528" y2="330" id="svg_5"/>
-  <rect fill="none" stroke="#000000" stroke-width="5" x="429" y="65" width="174" height="96" id="svg_6"/>
-  <ellipse fill="none" stroke="#000000" stroke-width="5" cx="107" cy="416" id="svg_7" rx="79" ry="23"/>
-  <path fill="none" stroke="#000000" stroke-width="5" d="m40,288c93,0 194,127 193,53c-1,-74 121,16 122,44l1,28" id="svg_8"/>
+  <path fill="none" stroke="#000" stroke-width="1.5" id="svg_15" d="m425.5,396c1,1 8.87392,7.20764 17,12c8.86827,5.23007 17.84787,9.50229 27,12c13.81268,3.76962 24.05551,4.48941 35,3c11.07822,-1.5076 21.71249,-3.8367 37,-14c9.49496,-6.31235 17.65054,-15.57292 26,-29c5.43677,-8.74309 7.49924,-16.95847 8,-26c0.44241,-7.98776 0.19272,-17.61999 -7,-30c-4.32147,-7.43806 -11.31625,-14.73406 -22,-24c-7.55453,-6.55202 -16,-12 -24,-16l-6,-3l-9,-5"/>
+  <line stroke="#000" id="svg_1" y2="223.999995" x2="308.000002" y1="53" x1="210" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="1.5" fill="none"/>
+  <line stroke="#000" id="svg_2" y2="369.999999" x2="402.999998" y1="317.000002" x1="353.000001" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="1.5" fill="none"/>
  </g>
 </svg>
