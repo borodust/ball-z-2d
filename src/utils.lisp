@@ -16,6 +16,7 @@
 
 
 (defgeneric render (object))
+(defgeneric act (object))
 
 
 (defun current-seconds ()

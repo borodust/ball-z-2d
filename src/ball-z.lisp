@@ -3,15 +3,13 @@
 
 (defvar *viewport-width* 800)
 (defvar *viewport-height* 600)
-(defvar *universe-step* 0.014)
+(defparameter *universe-step* 0.014)
+(defparameter *step-split* 4)
 
 
 (gamekit:defgame ball-z-2d ()
-  ((universe)
-   (level)
-   (force-vial :initform (make-force-vial))
-   (balls :initform nil)
-   (current-force :initform 0d0)
+  ((universe :initform nil)
+   (game-state :initform nil)
    (cursor :initform (gamekit:vec2 0 0)))
   (:viewport-width *viewport-width*)
   (:viewport-height *viewport-height*)
@@ -24,55 +22,49 @@
            args)))
 
 
+(defmacro with-game-specials ((game) &body body)
+  (alexandria:with-gensyms (this-universe this-cursor)
+    `(with-slots ((,this-universe universe) (,this-cursor cursor)) ,game
+       (let ((*universe* ,this-universe)
+             (*cursor* ,this-cursor))
+         ,@body))))
+
+
 (defmethod gamekit:post-initialize ((this ball-z-2d))
-  (with-slots (universe level cursor balls force-vial current-force) this
+  (with-slots (universe cursor game-state) this
     (setf universe (ge.phy:make-universe :2d)
           (ge.phy:gravity universe) (gamekit:vec2 0 -9.81))
-    (let ((*universe* universe))
-      (setf level (load-level (asdf:system-relative-pathname
-                               :ball-z-2d "assets/levels/level.svg")))
-      (gamekit:bind-cursor (lambda (x y)
-                             (setf (gamekit:x cursor) x
-                                   (gamekit:y cursor) y)))
-      (gamekit:bind-button :mouse-left :pressed
-                           (lambda ()
-                             (push (spawn-ball universe
-                                               (gamekit:vec2 (* (gamekit:x cursor) *unit-scale*)
-                                                             (* (gamekit:y cursor) *unit-scale*)))
-                                   balls)))
-      (gamekit:bind-button :mouse-right :pressed
-                           (lambda ()
-                             (push (spawn-master-bawl universe
-                                                      (gamekit:vec2 (* (gamekit:x cursor) *unit-scale*)
-                                                                    (* (gamekit:y cursor) *unit-scale*)))
-                                   balls)))
-      (gamekit:bind-button :space :pressed
-                           (lambda () (absorb-force force-vial)))
-      (gamekit:bind-button :space :released
-                           (lambda ()
-                             (setf current-force (release-force force-vial)))))))
+    (with-game-specials (this)
+      (setf game-state (make-level-state
+                        (asdf:system-relative-pathname :ball-z-2d "assets/levels/level.svg"))))
+    (gamekit:bind-cursor (lambda (x y)
+                           (setf (gamekit:x cursor) x
+                                 (gamekit:y cursor) y)))
+    (flet ((%bind-button (button)
+             (gamekit:bind-button button :pressed
+                                  (lambda ()
+                                    (with-game-specials (this)
+                                      (button-pressed game-state button))))
+             (gamekit:bind-button button :released
+                                  (lambda ()
+                                    (with-game-specials (this)
+                                      (button-released game-state button))))))
+      (%bind-button :mouse-left)
+      (%bind-button :space))))
 
 
 (defmethod gamekit:act ((this ball-z-2d))
-  (with-slots (universe cursor balls current-force) this
-    (let ((*cursor* cursor))
-      (when (> current-force 0d0)
-        (loop for ball in balls
-              do (apply-force ball current-force))
-        (setf current-force 0d0))
-      (loop for i from 0 below 3
-            do (ge.phy:observe-universe universe (/ *universe-step* 3))))))
+  (with-slots (game-state) this
+    (with-game-specials (this)
+      (act game-state)
+      (loop for i from 0 below *step-split*
+            do (ge.phy:observe-universe *universe* (/ *universe-step* *step-split*))))))
 
 
 (defmethod gamekit:draw ((this ball-z-2d))
-  (with-slots (level balls cursor) this
-    (let ((*cursor* cursor))
-
-      (render level)
-      (loop for ball in balls do
-        (render ball)))))
-
-
+  (with-slots (game-state) this
+    (with-game-specials (this)
+      (render game-state))))
 
 
 (defun run ()

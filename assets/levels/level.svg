@@ -1,9 +1,10 @@
 <svg width="800" height="600" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
  <g>
   <title>Layer 1</title>
-  <path fill="none" stroke="#000" stroke-width="1.5" id="svg_15" d="m425.5,396c1,1 8.87392,7.20764 17,12c8.86827,5.23007 17.84787,9.50229 27,12c13.81268,3.76962 24.05551,4.48941 35,3c11.07822,-1.5076 21.71249,-3.8367 37,-14c9.49496,-6.31235 17.65054,-15.57292 26,-29c5.43677,-8.74309 7.49924,-16.95847 8,-26c0.44241,-7.98776 0.19272,-17.61999 -7,-30c-4.32147,-7.43806 -11.31625,-14.73406 -22,-24c-7.55453,-6.55202 -16,-12 -24,-16l-6,-3l-9,-5"/>
-  <line stroke="#000" id="svg_1" y2="224" x2="308" y1="53" x1="210" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="1.5" fill="none"/>
-  <line stroke="#000" id="svg_2" y2="370" x2="403" y1="317" x1="353" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="1.5" fill="none"/>
-  <path stroke="#000000" fill="none" stroke-width="5" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" d="m34.30738,34.28829c110.28624,21.90088 -111.58373,400.6573 41.51953,447.03564c153.10325,46.37834 591.65325,173.91877 637.06523,59.26121c45.41198,-114.65756 94.71642,-495.99055 66.17175,-507.58514" id="svg_4"/>
+  <path d="m425.5,396c1,1 8.87392,7.20764 17,12c8.86827,5.23007 17.84787,9.50229 27,12c13.81268,3.76962 24.05551,4.48941 35,3c11.07822,-1.5076 21.71249,-3.8367 37,-14c9.49496,-6.31235 17.65054,-15.57292 26,-29c5.43677,-8.74309 7.49924,-16.95847 8,-26c0.44241,-7.98776 0.19272,-17.61999 -7,-30c-4.32147,-7.43806 -11.31625,-14.73406 -22,-24c-7.55453,-6.55202 -16,-12 -24,-16l-6,-3l-9,-5" id="svg_15" stroke-width="1.5" stroke="#000" fill="none"/>
+  <line fill="none" stroke-width="1.5" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x1="210" y1="53" x2="308" y2="224" id="svg_1" stroke="#000"/>
+  <line fill="none" stroke-width="1.5" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" x1="353" y1="317" x2="403" y2="370" id="svg_2" stroke="#000"/>
+  <path id="svg_4" d="m34.30738,34.28829c110.28624,21.90088 -111.58373,400.6573 41.51953,447.03564c153.10325,46.37834 591.65325,173.91877 637.06523,59.26121c45.41198,-114.65756 94.71642,-495.99055 66.17175,-507.58514" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="5" fill="none" stroke="#000000"/>
+  <circle fill-opacity="0.5" id="svg_3" r="15.2047" cy="48.5" cx="245.5" stroke-dasharray="4,4" stroke-width="5" fill="#000000" stroke="#000000"/>
  </g>
 </svg>
