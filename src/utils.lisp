@@ -1,6 +1,7 @@
 (cl:in-package :ball-z-2d)
 
-(declaim (special *universe*))
+(declaim (special *universe*
+                  *cursor*))
 
 
 (defvar *unit-scale* 0.01)
@@ -15,3 +16,27 @@
 
 
 (defgeneric render (object))
+
+
+(defun current-seconds ()
+  (float (/ (get-internal-real-time) internal-time-units-per-second) 0d0))
+
+
+(defstruct (force-vial
+            (:constructor %make-force-vial))
+  (timestamp 0d0 :type double-float))
+
+
+(defun make-force-vial ()
+  (%make-force-vial))
+
+
+(defun absorb-force (force-vial)
+  (setf (force-vial-timestamp force-vial) (current-seconds)))
+
+
+(defun release-force (force-vial)
+  (let* ((current-time (current-seconds))
+         (force (- current-time (force-vial-timestamp force-vial))))
+    (setf (force-vial-timestamp force-vial) current-time)
+    force))
