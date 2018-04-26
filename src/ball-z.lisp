@@ -1,8 +1,6 @@
 (cl:in-package :ball-z-2d)
 
 
-(defvar *viewport-width* 800)
-(defvar *viewport-height* 600)
 (defparameter *universe-step* 0.014)
 (defparameter *step-split* 4)
 

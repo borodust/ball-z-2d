@@ -4,8 +4,11 @@
                   *cursor*))
 
 
+(defvar *viewport-width* 800)
+(defvar *viewport-height* 600)
 (defvar *unit-scale* 0.01)
-
+(defvar *viewport-half* (gamekit:vec2 (/ *viewport-width* 2)
+                                      (/ *viewport-height* 2)))
 
 (defun mult-by-unit (point)
   (gamekit:mult point *unit-scale*))

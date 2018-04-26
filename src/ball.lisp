@@ -8,6 +8,10 @@
    (color :reader %color-of)))
 
 
+(defun ball-position (ball)
+  (ge.phy:body-position (%body-of ball)))
+
+
 (defmethod initialize-instance :after ((this ball) &key universe
                                                      position
                                                      (radius 0.2)
@@ -47,13 +51,13 @@
   (make-instance 'master-bawl :universe universe :position position))
 
 
-(defun ball-direction (ball)
-  (let ((pos (gamekit:div (ge.phy:body-position (%body-of ball)) *unit-scale*)))
-    (gamekit:normalize (gamekit:subt *cursor* pos))))
+(defun bawl-direction ()
+  (gamekit:normalize (gamekit:subt *cursor* (gamekit:vec2 (/ *viewport-width* 2)
+                                                          (/ *viewport-height* 2)))))
 
 
 (defmethod apply-force ((this master-bawl) force)
-  (ge.phy:apply-force (%body-of this) (gamekit:mult (ball-direction this) (* force 10000))))
+  (ge.phy:apply-force (%body-of this) (gamekit:mult (bawl-direction) (* force 10000))))
 
 
 (defmethod render ((this master-bawl))
@@ -61,7 +65,7 @@
     (call-next-method this)
     (gamekit:with-pushed-canvas ()
       (let* ((triangle-pos (gamekit:div (ge.phy:body-position (%body-of this)) *unit-scale*))
-             (direction-vec (gamekit:normalize (gamekit:subt *cursor* triangle-pos)))
+             (direction-vec (bawl-direction))
              (triangle-angle (- (atan (gamekit:y direction-vec) (gamekit:x direction-vec)) (/ pi 2))))
         (gamekit:translate-canvas (gamekit:x triangle-pos) (gamekit:y triangle-pos))
         (gamekit:rotate-canvas triangle-angle)

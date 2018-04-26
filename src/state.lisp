@@ -17,7 +17,8 @@
    (force-vial :initform (make-force-vial))
    (current-force :initform 0d0)
    (balls :initform nil)
-   (level :initarg :level :initform nil)))
+   (level :initarg :level :initform nil)
+   (camera :initform (make-instance 'camera))))
 
 
 (defmethod initialize-instance :after ((this level-state) &key)
@@ -56,8 +57,11 @@
 
 
 (defmethod render ((this level-state))
-  (with-slots (level balls player) this
-    (render level)
-    (loop for ball in balls do
-      (render ball))
-    (render player)))
+  (with-slots (level balls player camera) this
+    (let* ((player-pos (gamekit:div (ball-position player) *unit-scale* -1))
+           (camera-pos (camera-position camera player-pos)))
+      (gamekit:translate-canvas (gamekit:x camera-pos) (gamekit:y camera-pos))
+      (render level)
+      (loop for ball in balls do
+        (render ball))
+      (render player))))
