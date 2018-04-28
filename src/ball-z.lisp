@@ -30,8 +30,11 @@
 
 (defmethod gamekit:post-initialize ((this ball-z-2d))
   (with-slots (universe cursor game-state) this
-    (setf universe (ge.phy:make-universe :2d)
-          (ge.phy:gravity universe) (gamekit:vec2 0 -9.81))
+    (flet ((%on-post-solve (this-shape that-shape)
+             (with-game-specials (this)
+               (collide game-state this-shape that-shape))))
+      (setf universe (ge.phy:make-universe :2d :on-post-solve #'%on-post-solve)
+            (ge.phy:gravity universe) (gamekit:vec2 0 -9.81)))
     (with-game-specials (this)
       (setf game-state (make-level-state
                         (asdf:system-relative-pathname :ball-z-2d "assets/levels/level.svg"))))

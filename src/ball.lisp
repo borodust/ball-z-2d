@@ -20,7 +20,7 @@
     (setf this-color color
           this-radius radius
           body (ge.phy:make-rigid-body universe)
-          shape (ge.phy:make-circle-shape universe radius :body body)
+          shape (ge.phy:make-circle-shape universe radius :body body :substance this)
           (ge.phy:body-position body) position)
     (ge.phy:infuse-circle-mass body 1 radius)))
 

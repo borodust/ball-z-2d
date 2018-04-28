@@ -6,6 +6,11 @@
 (defgeneric button-released (game-state button)
   (:method (game-state button) (declare (ignore game-state button))))
 
+(defgeneric collide (game-state this-shape that-shape)
+  (:method (game-state this-shape that-shape)
+    (declare (ignore game-state this-shape that-shape))))
+
+
 (defclass game-state () ())
 
 ;;;
@@ -47,6 +52,23 @@
 (defmethod button-released ((this level-state) (button (eql :space)))
   (with-slots (force-vial current-force) this
     (setf current-force (release-force force-vial))))
+
+
+(defgeneric master-collision-p (this that)
+  (:method (this that) (declare (ignore this that)) nil))
+
+
+(defmethod master-collision-p ((this master-bawl) (that ball))
+  t)
+
+(defmethod master-collision-p ((that ball) (this master-bawl))
+  t)
+
+
+(defmethod collide ((this level-state) this-shape that-shape)
+  (when (master-collision-p (ge.phy:shape-substance this-shape)
+                            (ge.phy:shape-substance that-shape))
+    (log:info "BOOM!")))
 
 
 (defmethod act ((this level-state))
