@@ -1,0 +1,52 @@
+language: common-lisp
+sudo: false
+
+addons:
+  apt:
+    packages:
+    - zip
+
+env:
+  global:
+  - GAMEKIT_SYSTEM_NAME: ball-z-2d
+  - GAMEKIT_APPLICATION_PACKAGE: ball-z-2d
+  - GAMEKIT_APPLICATION_MAIN_CLASS: ball-z-2d
+  - PATH: ~/bin/:$PATH
+  - GAMEKIT_TARGET_PACKAGE: $GAMEKIT_SYSTEM_NAME-x86-64-$TRAVIS_OS_NAME-$TRAVIS_BRANCH.zip
+  - GAMEKIT_BUILD_DIR: /tmp/$GAMEKIT_SYSTEM_NAME
+  - secure: "k8Ep5Oyq3L7NOQF4KcZcUaudua2cKrVT5kVI5f+07oVQ6lJWIkRvCjWfrJdkds9e57nMN2Ke1v8qmWzr+q63ZDi0dHDJsYieeNH25C0ZWNDXTlv4BPhyXHPdN43G1hM9L9xpcIgtgUAGnk1rW1etW0VSL2nmcc8TK11DBgHkJ8nxJM52dPg1D1mOsrO4SRTbBsrPyZnpwQTRoj3DjH0eTgFTVGK6I3VWjspTxYMrHLp3HL25J05axKT9mVP5oW0CMJufXtlbRiibB6o+o896Wcw7guijTjcyXhaMD65gpJVNe5ACwMs0I3KCgET7G4LBCBBefyfh9ClmH9vxkACjf1p2Y+dpYUeXmipM1BgbUvJR/UDa+VFXAtPaiAdLv7/wRwqzcZ/alUH/RzqDe6ANg94PvuqS7A/T6fMo43fluGBQwwgex42wRvc52A0dwqJyta0DHidho0LEkRIRfGeFu6L2gxLfDuk9fNossmH8LCWCWdGCJpysujlGrf2amSSyMATvmqeNumDvzV8benFm0dkd29K3FJApkmFR2N0pReP87AreTC983Y1BC31gXHDEDw+bpPLI8mz56CED+A0HgGLnbJAWSV8MdrhBAAY8yUqxd13MFTxGrFKOogdfNILLw0wQ4T0PWcuW/NugLWIgXYCsUrVeNGe3omPlp2xGl0Y="
+
+branches:
+  only:
+    - "/^v\\d+(\\.\\d+)+$/"
+
+os:
+  - linux
+  - osx
+
+install:
+  - curl -L http://bodge.borodust.org/files/install.sh | sh
+
+cache:
+  directories:
+  - "$HOME/opt/sbcl/"
+  - "$HOME/.config/common-lisp/"
+
+script:
+  - >
+    sbcl --script $HOME/bodge/scripts/build-gamekit-system.lisp
+    $GAMEKIT_SYSTEM_NAME $GAMEKIT_APPLICATION_PACKAGE $GAMEKIT_APPLICATION_MAIN_CLASS
+    $TRAVIS_BUILD_DIR
+    $GAMEKIT_BUILD_DIR
+
+before_deploy:
+  - mv "$GAMEKIT_BUILD_DIR/$GAMEKIT_SYSTEM_NAME.zip" $GAMEKIT_TARGET_PACKAGE
+
+deploy:
+  provider: releases
+  api-key: $GITHUB_TOKEN
+  file: $GAMEKIT_TARGET_PACKAGE
+  skip_cleanup: true
+  overwrite: true
+  on:
+    tags: true
