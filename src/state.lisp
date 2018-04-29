@@ -68,25 +68,47 @@
 (defmethod collide ((this level-state) this-shape that-shape)
   (alexandria:when-let ((bawl (master-collision-p (ge.phy:shape-substance this-shape)
                                                   (ge.phy:shape-substance that-shape))))
-    (ge.ng:dispose (if (eq bawl (ge.phy:shape-substance this-shape))
-                 that-shape
-                 this-shape))
-    (log:info "BOOM! ~A" (ge.phy:shape-body this-shape))))
+    (let ((vel (ge.ng:vector-length (ge.phy:body-linear-velocity (ball-body bawl)))))
+      (when (> vel 9)
+        (ge.ng:dispose (if (eq bawl (ge.phy:shape-substance this-shape))
+                           that-shape
+                           this-shape))
+        (repair-bawl bawl)
+        (log:info "BOOM! ~A" vel)))))
 
 
 (defmethod act ((this level-state))
   (with-slots (player current-force) this
+    (degrade-bawl player)
     (when (> current-force 0d0)
       (apply-force player current-force)
       (setf current-force 0d0))))
 
 
+(defun draw-hud (level-state)
+  (with-slots (force-vial player) level-state
+    (gamekit:draw-text "00:00" (gamekit:vec2 370 570))
+
+    (let ((meter-len (* 200 (/ (bawl-health player) *max-bawl-health*))))
+      (gamekit:draw-text "HEALTH" (gamekit:vec2 10 10))
+      (gamekit:draw-line (gamekit:vec2 105 18) (gamekit:vec2 (+ 105 meter-len) 18)
+                         (gamekit:vec4 0 0 0 1) :thickness 18))
+
+    (let ((meter-len (* 190 (/ (peek-force force-vial) *max-vial-power*))))
+      (gamekit:draw-text "POWER" (gamekit:vec2 500 10))
+      (gamekit:draw-line (gamekit:vec2 590 18) (gamekit:vec2 (+ 600 meter-len) 18)
+                         (gamekit:vec4 0 0 0 1) :thickness 18))))
+
+
+
 (defmethod render ((this level-state))
   (with-slots (level balls player camera) this
-    (let* ((player-pos (gamekit:div (ball-position player) *unit-scale* -1))
-           (camera-pos (camera-position camera player-pos)))
-      (gamekit:translate-canvas (gamekit:x camera-pos) (gamekit:y camera-pos))
-      (render level)
-      (loop for ball in balls do
-        (render ball))
-      (render player))))
+    (gamekit:with-pushed-canvas ()
+      (let* ((player-pos (gamekit:div (ball-position player) *unit-scale* -1))
+             (camera-pos (camera-position camera player-pos)))
+        (gamekit:translate-canvas (gamekit:x camera-pos) (gamekit:y camera-pos))
+        (render level)
+        (loop for ball in balls do
+          (render ball))
+        (render player)))
+    (draw-hud this)))

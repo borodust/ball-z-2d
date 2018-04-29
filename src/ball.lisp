@@ -12,6 +12,10 @@
   (ge.phy:body-position (%body-of ball)))
 
 
+(defun ball-body (ball)
+ (%body-of ball))
+
+
 (defmethod initialize-instance :after ((this ball) &key universe
                                                      position
                                                      (radius 0.2)
@@ -40,8 +44,14 @@
   (:method (ball force)))
 
 
+(defparameter *max-bawl-health* 100)
+(defparameter *health-degradation-speed* 1)
+(defparameter *health-restoration-amount* 10)
+
 (defclass master-bawl (ball)
-  ((triangle :initform (list (gamekit:vec2 -2 14)
+  ((health :initform *max-bawl-health*)
+   (health-timestamp :initform (current-seconds))
+   (triangle :initform (list (gamekit:vec2 -2 14)
                              (gamekit:vec2 0 17)
                              (gamekit:vec2 2 14))))
   (:default-initargs :radius 0.1 :color (gamekit:vec4 0 0 0 1)))
@@ -54,6 +64,25 @@
 (defun bawl-direction ()
   (gamekit:normalize (gamekit:subt *cursor* (gamekit:vec2 (/ *viewport-width* 2)
                                                           (/ *viewport-height* 2)))))
+
+
+(defun degrade-bawl (bawl)
+  (with-slots (health health-timestamp) bawl
+    (let ((current-time (current-seconds)))
+      (setf health (max 0 (- health (* *health-degradation-speed*
+                                       (- current-time health-timestamp))))
+            health-timestamp current-time))
+    health))
+
+
+(defun repair-bawl (bawl)
+  (with-slots (health) bawl
+    (setf health (min *max-bawl-health* (+ health *health-restoration-amount*)))))
+
+
+(defun bawl-health (bawl)
+  (with-slots (health) bawl
+    health))
 
 
 (defmethod apply-force ((this master-bawl) force)

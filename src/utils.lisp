@@ -26,6 +26,8 @@
   (float (/ (get-internal-real-time) internal-time-units-per-second) 0d0))
 
 
+(defparameter *max-vial-power* 0.5)
+
 (defstruct (force-vial
             (:constructor %make-force-vial))
   (timestamp 0d0 :type double-float))
@@ -39,8 +41,15 @@
   (setf (force-vial-timestamp force-vial) (current-seconds)))
 
 
+(defun peek-force (force-vial)
+  (min (if (/= (force-vial-timestamp force-vial) 0d0)
+           (let* ((current-time (current-seconds)))
+             (- current-time (force-vial-timestamp force-vial)))
+           0d0)
+       *max-vial-power*))
+
+
 (defun release-force (force-vial)
-  (let* ((current-time (current-seconds))
-         (force (- current-time (force-vial-timestamp force-vial))))
-    (setf (force-vial-timestamp force-vial) current-time)
+  (let ((force (peek-force force-vial)))
+    (setf (force-vial-timestamp force-vial) 0d0)
     force))
