@@ -6,5 +6,6 @@
   <line stroke="#000" id="svg_2" y2="370" x2="403" y1="317" x1="353" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="1.5" fill="none"/>
   <path stroke="#000000" fill="none" stroke-width="5" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" d="m34.30738,34.28829c110.28624,21.90088 -111.58373,400.6573 41.51953,447.03564c153.10325,46.37834 591.65325,173.91877 637.06523,59.26121c45.41198,-114.65756 94.71642,-495.99055 66.17175,-507.58514" id="svg_4"/>
   <circle stroke="#000000" fill="#000000" stroke-width="5" stroke-dasharray="4,4" cx="226.5" cy="18.5" r="15.2047" id="svg_3" fill-opacity="0.5"/>
+  <line stroke="#0000ff" id="svg_7" y2="34" x2="778.00001" y1="57" x1="606" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="4,4" stroke-width="5" fill="none"/>
  </g>
 </svg>

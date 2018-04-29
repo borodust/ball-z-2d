@@ -38,10 +38,14 @@
 
 (defmethod gamekit:post-initialize ((this ball-z-2d))
   (with-slots (universe cursor game-state) this
-    (flet ((%on-post-solve (this-shape that-shape)
+    (flet ((%on-pre-solve (this-shape that-shape)
+             (with-game-specials (this)
+               (pre-collide game-state this-shape that-shape)))
+           (%on-post-solve (this-shape that-shape)
              (with-game-specials (this)
                (collide game-state this-shape that-shape))))
-      (setf universe (ge.phy:make-universe :2d :on-post-solve #'%on-post-solve)
+      (setf universe (ge.phy:make-universe :2d :on-post-solve #'%on-post-solve
+                                               :on-pre-solve #'%on-pre-solve)
             (ge.phy:gravity universe) (gamekit:vec2 0 -9.81)))
     (transition-to 'start-state)
     (gamekit:bind-cursor (lambda (x y)

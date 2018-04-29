@@ -5,6 +5,52 @@
   (:method (feature) (declare (ignore feature))))
 
 
+
+(defun extract-stroke (object)
+  (parse-number (subseq (getf object :stroke) 1) :radix 16))
+
+;;;
+;;; CONTROLLERS
+;;;
+
+(defclass controller ()
+  ((type :initarg :type :reader controller-type)
+   (id :initarg :id :reader controller-id)))
+
+
+(defun make-controller (type id)
+  (make-instance 'controller :type type :id id))
+
+
+(defun shape-controller (shape)
+  (alexandria:when-let ((substance (ge.phy:shape-substance shape)))
+    (when (subtypep (type-of substance) 'controller)
+      substance)))
+
+;;;
+;;;
+;;;
+(defclass line-controller ()
+  ((shape :initarg :shape :reader %shape-of)
+   (origin :initarg :origin)
+   (end :initarg :end)))
+
+
+(defun make-line-controller (id origin end)
+  (make-instance 'line-controller
+                 :origin origin
+                 :end end
+                 :shape (ge.phy:make-segment-shape *universe*
+                                                   (mult-by-unit origin)
+                                                   (mult-by-unit end)
+                                                   :substance (make-controller :line id))))
+
+
+(defmethod discard-level-feature ((this line-controller))
+  (with-slots (shape) this
+    (ge.ng:dispose shape)))
+
+
 ;;;
 ;;; OBSTACLES
 ;;;
@@ -208,6 +254,16 @@
   (destructuring-bind (&key cx cy &allow-other-keys) object
     (setf (player-spawn-point-of level) (gamekit:vec2 (parse-number cx)
                                                       (invert-y (parse-number cy))))))
+
+
+(defmethod infuse-level-feature ((name (eql :line)) (type (eql :controller)) object level)
+  (destructuring-bind (&key x1 y1 x2 y2 &allow-other-keys) object
+    (let ((controller (make-line-controller (extract-stroke object)
+                                            (gamekit:vec2 (parse-number x1)
+                                                          (invert-y (parse-number y1)))
+                                            (gamekit:vec2 (parse-number x2)
+                                                          (invert-y (parse-number y2))))))
+      (add-level-feature level controller))))
 
 
 (defun init-level-feature (level object)

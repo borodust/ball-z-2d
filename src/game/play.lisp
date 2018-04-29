@@ -56,26 +56,47 @@
 
 
 (defmethod master-collision-p ((this master-bawl) (that ball))
-  this)
+  that)
+
 
 (defmethod master-collision-p ((that ball) (this master-bawl))
-  this)
+  that)
+
+
+(defgeneric control-collision-p (this that)
+  (:method (this that) (declare (ignore this that)) nil))
+
+
+(defmethod control-collision-p ((this master-bawl) (that controller))
+  that)
+
+(defmethod control-collision-p ((that controller) (this master-bawl))
+  that)
+
+
+(defmethod pre-collide ((this level-state) this-shape that-shape)
+  (with-slots ((bawl player)) this
+    (alexandria:if-let ((controller (control-collision-p (ge.phy:shape-substance this-shape)
+                                                           (ge.phy:shape-substance that-shape))))
+      (if (and (eq (controller-type controller) :line) (= (controller-id controller) #x0000ff))
+          (progn
+            (transition-to 'victory-state)
+            nil)
+          t)
+      t)))
 
 
 (defmethod collide ((this level-state) this-shape that-shape)
-  (alexandria:when-let ((bawl (master-collision-p (ge.phy:shape-substance this-shape)
-                                                  (ge.phy:shape-substance that-shape))))
-    (let* ((other-ball (ge.phy:shape-substance
-                        (if (eq bawl (ge.phy:shape-substance this-shape))
-                            that-shape
-                            this-shape)))
-           (vel (ge.ng:vector-length
-                 (gamekit:add (ge.phy:body-linear-velocity (ball-body bawl))
-                              (ge.phy:body-linear-velocity (ball-body other-ball))))))
-      (when (and (> vel 9) (not (bawl-dead-p bawl)))
-        (repair-bawl bawl)
-        (kill-ball other-ball)
-        (log:info "BOOM! ~A" vel)))))
+  (with-slots ((bawl player)) this
+    (alexandria:when-let ((other-ball (master-collision-p (ge.phy:shape-substance this-shape)
+                                                          (ge.phy:shape-substance that-shape))))
+      (let* ((vel (ge.ng:vector-length
+                   (gamekit:add (ge.phy:body-linear-velocity (ball-body bawl))
+                                (ge.phy:body-linear-velocity (ball-body other-ball))))))
+        (when (and (> vel 9) (not (bawl-dead-p bawl)))
+          (repair-bawl bawl)
+          (kill-ball other-ball)
+          (log:info "BOOM! ~A" vel))))))
 
 
 (defmethod act ((this level-state))

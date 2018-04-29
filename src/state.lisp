@@ -11,6 +11,12 @@
     (declare (ignore game-state this-shape that-shape))))
 
 
+(defgeneric pre-collide (game-state this-shape that-shape)
+  (:method (game-state this-shape that-shape)
+    (declare (ignore game-state this-shape that-shape))
+    t))
+
+
 (defclass game-state () ())
 
 
