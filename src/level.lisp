@@ -192,7 +192,9 @@
 
 (defun parse-feature-type (object)
   (destructuring-bind (&key stroke-dasharray &allow-other-keys) object
-    (if (or (null stroke-dasharray) (equalp "null" stroke-dasharray))
+    (if (or (null stroke-dasharray)
+            (equalp "null" stroke-dasharray)
+            (equalp "none" stroke-dasharray))
         :obstacle
         (let* ((pattern (mapcar #'parse-number (split-sequence:split-sequence #\, stroke-dasharray)))
                (first (first pattern))
@@ -282,9 +284,16 @@
     (infuse-level-feature name feature-type object level)))
 
 
+(defun extract-style (object)
+  (alexandria:when-let ((style (getf object :style)))
+    (loop for attrib in (split-sequence:split-sequence #\; style)
+          for (name value) = (split-sequence:split-sequence #\: attrib)
+          append (list (alexandria:make-keyword (uiop:standard-case-symbol-name name))
+                       value))))
+
 (defun init-features (level level-descriptor)
   (loop for object in level-descriptor
-        do (init-level-feature level object)))
+        do (init-level-feature level (append object (extract-style object)))))
 
 
 (defun load-level (string)

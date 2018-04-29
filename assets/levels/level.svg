@@ -1,14 +1,26 @@
-<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
- <g>
-  <title>Layer 1</title>
-  <path fill="none" stroke="#000" stroke-width="1.5" id="svg_15" d="m425.5,396c1,1 8.87392,7.20764 17,12c8.86827,5.23007 17.84787,9.50229 27,12c13.81268,3.76962 24.05551,4.48941 35,3c11.07822,-1.5076 21.71249,-3.8367 37,-14c9.49496,-6.31235 17.65054,-15.57292 26,-29c5.43677,-8.74309 7.49924,-16.95847 8,-26c0.44241,-7.98776 0.19272,-17.61999 -7,-30c-4.32147,-7.43806 -11.31625,-14.73406 -22,-24c-7.55453,-6.55202 -16,-12 -24,-16l-6,-3l-9,-5"/>
-  <line stroke="#000" id="svg_1" y2="224" x2="308" y1="53" x1="210" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="1.5" fill="none"/>
-  <line stroke="#000" id="svg_2" y2="370" x2="403" y1="317" x1="353" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="1.5" fill="none"/>
-  <path stroke="#000000" fill="none" stroke-width="5" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" d="m34.30738,34.28829c110.28624,21.90088 -111.58373,400.6573 41.51953,447.03564c153.10325,46.37834 591.65325,173.91877 637.06523,59.26121c45.41198,-114.65756 94.71642,-495.99055 66.17175,-507.58514" id="svg_4"/>
-  <circle stroke="#000000" fill="#000000" stroke-width="5" stroke-dasharray="4,4" cx="226.5" cy="18.5" r="15.2047" id="svg_3" fill-opacity="0.5"/>
-  <line stroke="#0000ff" id="svg_7" y2="34" x2="778.00001" y1="57" x1="606" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="4,4" stroke-width="5" fill="none"/>
-  <circle id="svg_5" stroke="#ff0000" fill="#ff0000" stroke-width="5" stroke-dasharray="4,4" cx="89" cy="81" r="15.2047" fill-opacity="0.5"/>
-  <circle id="svg_6" stroke="#ff0000" fill="#ff0000" stroke-width="5" stroke-dasharray="4,4" cx="80" cy="53" r="15.2047" fill-opacity="0.5"/>
-  <circle id="svg_8" stroke="#ff0000" fill="#ff0000" stroke-width="5" stroke-dasharray="4,4" cx="87" cy="114" r="15.2047" fill-opacity="0.5"/>
- </g>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" id="svg232" version="1.1" height="600" width="800" sodipodi:docname="level.svg" inkscape:version="0.92.2 2405546, 2018-03-11">
+  <sodipodi:namedview pagecolor="#ffffff" bordercolor="#666666" borderopacity="1" objecttolerance="10" gridtolerance="10" guidetolerance="10" inkscape:pageopacity="0" inkscape:pageshadow="2" inkscape:window-width="1920" inkscape:window-height="1021" id="namedview3997" showgrid="false" inkscape:zoom="1.5733333" inkscape:cx="365.78598" inkscape:cy="125.94805" inkscape:window-x="0" inkscape:window-y="0" inkscape:window-maximized="1" inkscape:current-layer="svg232" />
+  <metadata id="metadata238">
+    <rdf:RDF>
+      <cc:Work rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs id="defs236" />
+  <g id="g230" transform="translate(0,0.63559322)">
+    <title id="title219">Layer 1</title>
+    <path d="m 425.5,396 c 1,1 8.87392,7.20764 17,12 8.86827,5.23007 17.84787,9.50229 27,12 13.81268,3.76962 24.05551,4.48941 35,3 11.07822,-1.5076 21.71249,-3.8367 37,-14 9.49496,-6.31235 17.65054,-15.57292 26,-29 5.43677,-8.74309 7.49924,-16.95847 8,-26 0.44241,-7.98776 0.19272,-17.61999 -7,-30 -4.32147,-7.43806 -11.31625,-14.73406 -22,-24 -7.55453,-6.55202 -16,-12 -24,-16 l -6,-3 -9,-5" id="svg_15" inkscape:connector-curvature="0" style="fill:none;stroke:#000000;stroke-width:1.5" />
+    <line stroke-linejoin="null" stroke-linecap="null" x1="210" y1="53" x2="308" y2="224" id="svg_1" style="fill:none;stroke:#000000;stroke-width:1.5;stroke-dasharray:none" />
+    <line stroke-linejoin="null" stroke-linecap="null" x1="353" y1="317" x2="403" y2="370" id="svg_2" style="fill:none;stroke:#000000;stroke-width:1.5;stroke-dasharray:none" />
+    <path id="svg_4" d="M 34.30738,34.28829 C 144.59362,56.18917 -77.27635,434.94559 75.82691,481.32393 228.93016,527.70227 667.48016,655.2427 712.89214,540.58514 758.30412,425.92758 807.60856,44.59459 779.06389,33" stroke-linecap="null" stroke-linejoin="null" inkscape:connector-curvature="0" style="fill:none;stroke:#000000;stroke-width:5;stroke-dasharray:none" />
+    <circle id="svg_3" r="15.2047" cy="18.5" cx="226.5" style="fill:#000000;fill-opacity:0.5;stroke:#000000;stroke-width:5;stroke-dasharray:4, 4" />
+    <line stroke-linejoin="null" stroke-linecap="null" x1="606" y1="57" x2="778" y2="34" id="svg_7" style="fill:none;stroke:#0000ff;stroke-width:5;stroke-dasharray:4, 4" />
+    <circle r="15.2047" cy="81" cx="89" id="svg_5" style="fill:#ff0000;fill-opacity:0.5;stroke:#ff0000;stroke-width:5;stroke-dasharray:4, 4" />
+    <circle r="15.2047" cy="53" cx="80" id="svg_6" style="fill:#ff0000;fill-opacity:0.5;stroke:#ff0000;stroke-width:5;stroke-dasharray:4, 4" />
+    <circle r="15.2047" cy="114" cx="87" id="svg_8" style="fill:#ff0000;fill-opacity:0.5;stroke:#ff0000;stroke-width:5;stroke-dasharray:4, 4" />
+  </g>
 </svg>
