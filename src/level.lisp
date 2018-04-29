@@ -1,6 +1,10 @@
 (cl:in-package :ball-z-2d)
 
 
+(defgeneric discard-level-feature (feature)
+  (:method (feature) (declare (ignore feature))))
+
+
 ;;;
 ;;; OBSTACLES
 ;;;
@@ -16,6 +20,11 @@
   (apply #'call-next-method this :shape (when obstacle-p
                                           (apply #'make-obstacle-shape this args))
          args))
+
+
+(defmethod discard-level-feature ((this obstacle))
+  (with-slots (shape) this
+    (ge.ng:dispose shape)))
 
 
 ;;;
@@ -106,6 +115,12 @@
 (defclass level ()
   ((features :initform nil)
    (spawn-point :initform nil :accessor player-spawn-point-of)))
+
+
+(defun discard-level (level)
+  (with-slots (features) level
+    (loop for feature in features
+          do (discard-level-feature feature))))
 
 
 (defun add-level-feature (level feature)

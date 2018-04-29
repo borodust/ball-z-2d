@@ -3,6 +3,7 @@
 
 (defclass ball ()
   (radius
+   (dead-p :initform nil)
    (body :reader %body-of)
    shape
    (color :reader %color-of)))
@@ -29,15 +30,32 @@
     (ge.phy:infuse-circle-mass body 1 radius)))
 
 
+(defun kill-ball (ball)
+  (with-slots (dead-p shape) ball
+    (ge.ng:dispose shape)
+    (setf dead-p t
+          shape nil)))
+
+
+(defun discard-ball (ball)
+  (with-slots (body shape) ball
+    (when shape
+      (ge.ng:dispose shape))
+    (ge.ng:dispose body)))
+
+
 (defun spawn-ball (universe position)
   (make-instance 'ball :universe universe :position position :color (gamekit:vec4 0.75 0.25 0.25 1)))
 
 
 (defmethod render ((this ball))
-  (with-slots (radius body color) this
-    (gamekit:draw-circle (gamekit:div (ge.phy:body-position body) *unit-scale*)
-                         (/ radius *unit-scale*)
-                         :fill-paint color)))
+  (with-slots (radius body color dead-p) this
+    (let ((position (gamekit:div (ge.phy:body-position body) *unit-scale*)))
+      (gamekit:with-pushed-canvas ()
+        (gamekit:translate-canvas (gamekit:x position) (gamekit:y position))
+        (gamekit:draw-circle *zero-vec2* (/ radius *unit-scale*) :fill-paint color)
+        (when dead-p
+          (gamekit:draw-text "×‸×" (gamekit:vec2 -18 -5)))))))
 
 
 (defgeneric apply-force (ball force)
@@ -45,7 +63,7 @@
 
 
 (defparameter *max-bawl-health* 100)
-(defparameter *health-degradation-speed* 1)
+(defparameter *health-degradation-speed* 10)
 (defparameter *health-restoration-amount* 10)
 
 (defclass master-bawl (ball)
@@ -83,6 +101,11 @@
 (defun bawl-health (bawl)
   (with-slots (health) bawl
     health))
+
+
+(defun bawl-dead-p (bawl)
+  (with-slots (health) bawl
+    (= health 0)))
 
 
 (defmethod apply-force ((this master-bawl) force)

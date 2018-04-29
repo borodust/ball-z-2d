@@ -14,4 +14,9 @@
                (:file "ball")
                (:file "level")
                (:file "state")
-               (:file "ball-z")))
+               (:file "ball-z")
+               (:module "game"
+                :serial t
+                :components ((:file "start")
+                             (:file "play")
+                             (:file "end")))))

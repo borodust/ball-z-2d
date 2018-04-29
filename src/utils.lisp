@@ -9,6 +9,7 @@
 (defvar *unit-scale* 0.01)
 (defvar *viewport-half* (gamekit:vec2 (/ *viewport-width* 2)
                                       (/ *viewport-height* 2)))
+(defvar *zero-vec2* (gamekit:vec2 0 0))
 
 (defun mult-by-unit (point)
   (gamekit:mult point *unit-scale*))
@@ -18,8 +19,11 @@
   (gamekit:div point *unit-scale*))
 
 
-(defgeneric render (object))
-(defgeneric act (object))
+(defgeneric render (object)
+  (:method (object) (declare (ignore object))))
+
+(defgeneric act (object)
+  (:method (object) (declare (ignore object))))
 
 
 (defun current-seconds ()
