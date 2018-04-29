@@ -59,16 +59,19 @@
 
 
 (defmethod master-collision-p ((this master-bawl) (that ball))
-  t)
+  this)
 
 (defmethod master-collision-p ((that ball) (this master-bawl))
-  t)
+  this)
 
 
 (defmethod collide ((this level-state) this-shape that-shape)
-  (when (master-collision-p (ge.phy:shape-substance this-shape)
-                            (ge.phy:shape-substance that-shape))
-    (log:info "BOOM!")))
+  (alexandria:when-let ((bawl (master-collision-p (ge.phy:shape-substance this-shape)
+                                                  (ge.phy:shape-substance that-shape))))
+    (ge.ng:dispose (if (eq bawl (ge.phy:shape-substance this-shape))
+                 that-shape
+                 this-shape))
+    (log:info "BOOM! ~A" (ge.phy:shape-body this-shape))))
 
 
 (defmethod act ((this level-state))
