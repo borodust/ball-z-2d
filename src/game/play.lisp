@@ -19,10 +19,12 @@
 
 
 (defmethod initialize-instance :after ((this level-state) &key)
-  (with-slots (player level) this
+  (with-slots (player level balls) this
     (setf level (load-level *level-descriptor-data*)
           player (spawn-master-bawl *universe*
-                                    (gamekit:mult (player-spawn-point-of level) *unit-scale*)))))
+                                    (mult-by-unit (player-spawn-point-of level))))
+    (loop for enemy-spawn in (enemy-spawn-points-of level)
+          do (push (spawn-ball *universe* (mult-by-unit enemy-spawn)) balls))))
 
 
 (defmethod discard-state ((this level-state))
@@ -31,14 +33,6 @@
     (loop for ball in balls
           do (discard-ball ball))
     (discard-level level)))
-
-
-(defmethod button-pressed ((this level-state) (button (eql :mouse-left)))
-  (with-slots (balls) this
-    (push (spawn-ball *universe*
-                      (gamekit:vec2 (* (gamekit:x *cursor*) *unit-scale*)
-                                    (* (gamekit:y *cursor*) *unit-scale*)))
-          balls)))
 
 
 (defmethod button-pressed ((this level-state) (button (eql :space)))

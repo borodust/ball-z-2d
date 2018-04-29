@@ -160,7 +160,8 @@
 ;;;
 (defclass level ()
   ((features :initform nil)
-   (spawn-point :initform nil :accessor player-spawn-point-of)))
+   (spawn-point :initform nil :accessor player-spawn-point-of)
+   (enemy-spawns :initform nil :accessor enemy-spawn-points-of)))
 
 
 (defun discard-level (level)
@@ -252,8 +253,12 @@
 
 (defmethod infuse-level-feature ((name (eql :circle)) (type (eql :controller)) object level)
   (destructuring-bind (&key cx cy &allow-other-keys) object
-    (setf (player-spawn-point-of level) (gamekit:vec2 (parse-number cx)
-                                                      (invert-y (parse-number cy))))))
+    (let ((center (gamekit:vec2 (parse-number cx)
+                                (invert-y (parse-number cy)))))
+    (alexandria:switch ((extract-stroke object) :test #'=)
+      (0 (setf (player-spawn-point-of level) center))
+      (#xff0000 (push center (enemy-spawn-points-of level)))))))
+
 
 
 (defmethod infuse-level-feature ((name (eql :line)) (type (eql :controller)) object level)
