@@ -204,7 +204,7 @@
         do (init-level-feature level object)))
 
 
-(defun load-level (path)
+(defun load-level (string)
   (let ((level (make-instance 'level)))
-    (init-features level (svgp:parse-svg-file path))
+    (init-features level (svgp:parse-svg-string string))
     level))

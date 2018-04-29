@@ -4,13 +4,11 @@
 ;;; LEVEL
 ;;;
 
-(defclass start-state (game-state)
-  ((first-level-path :initarg :first-level-path :initform (error ":first-level-path missing"))))
+(defclass start-state (game-state) ())
 
 
 (defmethod button-pressed ((this start-state) (button (eql :enter)))
-  (with-slots (first-level-path) this
-    (transition-to 'level-state :level (load-level first-level-path))))
+  (transition-to 'level-state))
 
 
 (defmethod render ((this start-state))

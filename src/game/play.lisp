@@ -4,18 +4,24 @@
 ;;; LEVEL
 ;;;
 
+
+(defvar *level-descriptor-data* (alexandria:read-file-into-string
+                                 (asdf:system-relative-pathname :ball-z-2d "assets/levels/level.svg")))
+
+
 (defclass level-state (game-state)
   ((player :initform nil)
    (force-vial :initform (make-force-vial))
    (current-force :initform 0d0)
    (balls :initform nil)
-   (level :initarg :level :initform nil)
+   (level :initform nil)
    (camera :initform (make-instance 'camera))))
 
 
 (defmethod initialize-instance :after ((this level-state) &key)
   (with-slots (player level) this
-    (setf player (spawn-master-bawl *universe*
+    (setf level (load-level *level-descriptor-data*)
+          player (spawn-master-bawl *universe*
                                     (gamekit:mult (player-spawn-point-of level) *unit-scale*)))))
 
 
@@ -87,8 +93,8 @@
     (gamekit:draw-text "00:00" (gamekit:vec2 370 570))
 
     (let ((meter-len (* 200 (/ (bawl-health player) *max-bawl-health*))))
-      (gamekit:draw-text "HEALTH" (gamekit:vec2 10 10))
-      (gamekit:draw-line (gamekit:vec2 105 18) (gamekit:vec2 (+ 105 meter-len) 18)
+      (gamekit:draw-text "PATIENCE" (gamekit:vec2 10 10))
+      (gamekit:draw-line (gamekit:vec2 130 18) (gamekit:vec2 (+ 130 meter-len) 18)
                          (gamekit:vec4 0 0 0 1) :thickness 18))
 
     (let ((meter-len (* 190 (/ (peek-force force-vial) *max-vial-power*))))

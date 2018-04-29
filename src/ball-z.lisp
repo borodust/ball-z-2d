@@ -28,6 +28,14 @@
          ,@body))))
 
 
+(defun transition-to (state-class &rest args &key &allow-other-keys)
+  (let ((game (gamekit:gamekit)))
+    (with-slots (game-state) game
+      (with-game-specials (game)
+        (discard-state game-state)
+        (setf game-state (apply #'make-instance state-class args))))))
+
+
 (defmethod gamekit:post-initialize ((this ball-z-2d))
   (with-slots (universe cursor game-state) this
     (flet ((%on-post-solve (this-shape that-shape)
@@ -35,8 +43,7 @@
                (collide game-state this-shape that-shape))))
       (setf universe (ge.phy:make-universe :2d :on-post-solve #'%on-post-solve)
             (ge.phy:gravity universe) (gamekit:vec2 0 -9.81)))
-    (transition-to 'start-state :first-level-path
-                   (asdf:system-relative-pathname :ball-z-2d "assets/levels/level.svg"))
+    (transition-to 'start-state)
     (gamekit:bind-cursor (lambda (x y)
                            (setf (gamekit:x cursor) x
                                  (gamekit:y cursor) y)))
@@ -67,14 +74,6 @@
   (with-slots (game-state) this
     (with-game-specials (this)
       (render game-state))))
-
-
-(defun transition-to (state-class &rest args &key &allow-other-keys)
-  (let ((game (gamekit:gamekit)))
-    (with-slots (game-state) game
-      (with-game-specials (game)
-        (discard-state game-state)
-        (setf game-state (apply #'make-instance state-class args))))))
 
 
 (defun run ()

@@ -19,4 +19,5 @@
                 :serial t
                 :components ((:file "start")
                              (:file "play")
-                             (:file "end")))))
+                             (:file "fail")
+                             (:file "victory")))))
