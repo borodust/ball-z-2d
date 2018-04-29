@@ -157,46 +157,68 @@
               :obstacle)))))
 
 
+(defgeneric infuse-level-feature (name feature-type object level)
+  (:method (name feature-type object level)
+    (error "Unrecognized level ~A: ~A" feature-type name)))
+
+
+(defmethod infuse-level-feature ((name (eql :path)) (type (eql :obstacle)) object level)
+  (let ((obstacle (make-instance 'path-obstacle
+                                 :obstacle-p t
+                                 :points (extract-points object))))
+    (add-level-feature level obstacle)))
+
+
+(defmethod infuse-level-feature ((name (eql :rect)) (type (eql :obstacle)) object level)
+  (destructuring-bind (&key x y width height &allow-other-keys) object
+
+    (let ((obstacle (make-instance 'rect-obstacle
+                                   :obstacle-p t
+                                   :origin (gamekit:vec2 (parse-number x)
+                                                         (invert-y (parse-number y)))
+                                   :width (parse-number width)
+                                   :height (parse-number height))))
+      (add-level-feature level obstacle))))
+
+
+(defmethod infuse-level-feature ((name (eql :line)) (type (eql :obstacle)) object level)
+  (destructuring-bind (&key x1 y1 x2 y2 &allow-other-keys) object
+    (let ((obstacle (make-instance 'line-obstacle
+                                   :obstacle-p t
+                                   :origin (gamekit:vec2 (parse-number x1)
+                                                         (invert-y (parse-number y1)))
+                                   :end (gamekit:vec2 (parse-number x2)
+                                                      (invert-y (parse-number y2))))))
+      (add-level-feature level obstacle))))
+
+
+(defmethod infuse-level-feature ((name (eql :ellipse)) (type (eql :obstacle)) object level)
+  (destructuring-bind (&key cx cy rx ry &allow-other-keys) object
+    (let ((obstacle (make-instance 'ellipse-obstacle
+                                   :obstacle-p t
+                                   :origin (gamekit:vec2 (parse-number cx)
+                                                         (invert-y (parse-number cy)))
+                                   :points (extract-points object)
+                                   :x-radius (parse-number rx)
+                                   :y-radius (parse-number ry))))
+      (add-level-feature level obstacle ))))
+
+
+(defmethod infuse-level-feature ((name (eql :circle)) (type (eql :controller)) object level)
+  (destructuring-bind (&key cx cy &allow-other-keys) object
+    (setf (player-spawn-point-of level) (gamekit:vec2 (parse-number cx)
+                                                      (invert-y (parse-number cy))))))
+
+
 (defun init-level-feature (level object)
-  (let ((feature-type (parse-feature-type object)))
-    (flet ((%add-level-feature (feature)
-             (add-level-feature level feature)))
-    (alexandria:switch ((getf object :type) :test #'equal)
-      ("path" (%add-level-feature
-               (make-instance 'path-obstacle
-                              :obstacle-p (eq feature-type :obstacle)
-                              :points (extract-points object))))
-      ("rect" (destructuring-bind (&key x y width height &allow-other-keys) object
-                (%add-level-feature
-                 (make-instance 'rect-obstacle
-                                :obstacle-p (eq feature-type :obstacle)
-                                :origin (gamekit:vec2 (parse-number x)
-                                                      (invert-y (parse-number y)))
-                                :width (parse-number width)
-                                :height (parse-number height)))))
-      ("line" (destructuring-bind (&key x1 y1 x2 y2 &allow-other-keys) object
-                (%add-level-feature
-                 (make-instance 'line-obstacle
-                                :obstacle-p (eq feature-type :obstacle)
-                                :origin (gamekit:vec2 (parse-number x1)
-                                                      (invert-y (parse-number y1)))
-                                :end (gamekit:vec2 (parse-number x2)
-                                                   (invert-y (parse-number y2)))))))
-      ("ellipse" (destructuring-bind (&key cx cy rx ry &allow-other-keys) object
-                (%add-level-feature
-                   (make-instance 'ellipse-obstacle
-                                  :obstacle-p (eq feature-type :obstacle)
-                                  :origin (gamekit:vec2 (parse-number cx)
-                                                        (invert-y (parse-number cy)))
-                                  :points (extract-points object)
-                                  :x-radius (parse-number rx)
-                                  :y-radius (parse-number ry)))))
-      ("circle" (destructuring-bind (&key cx cy &allow-other-keys) object
-                  (case feature-type
-                    (:controller
-                     (setf (player-spawn-point-of level) (gamekit:vec2 (parse-number cx)
-                                                                       (invert-y
-                                                                        (parse-number cy))))))))))))
+  (let ((feature-type (parse-feature-type object))
+        (name (alexandria:switch ((getf object :type) :test #'equal)
+                ("path" :path)
+                ("line" :line)
+                ("rect" :rect)
+                ("ellipse" :ellipse)
+                ("circle" :circle))))
+    (infuse-level-feature name feature-type object level)))
 
 
 (defun init-features (level level-descriptor)
