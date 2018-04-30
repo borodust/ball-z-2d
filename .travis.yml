@@ -25,16 +25,15 @@ os:
   - osx
 
 install:
-  - curl -L http://bodge.borodust.org/files/install.sh | sh
+  - curl -L http://bodge.borodust.org/files/install.sh | sh -s ccl
 
 cache:
   directories:
-  - "$HOME/opt/sbcl/"
   - "$HOME/.config/common-lisp/"
 
 script:
   - >
-    sbcl --script $HOME/bodge/scripts/build-gamekit-system.lisp
+    lisp $HOME/bodge/scripts/build-gamekit-system.lisp
     $GAMEKIT_SYSTEM_NAME $GAMEKIT_APPLICATION_PACKAGE $GAMEKIT_APPLICATION_MAIN_CLASS
     $TRAVIS_BUILD_DIR
     $GAMEKIT_BUILD_DIR
