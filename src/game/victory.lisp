@@ -3,7 +3,8 @@
 ;;;
 ;;; END
 ;;;
-(defclass victory-state (game-state) ())
+(defclass victory-state (game-state)
+  ((timestamp :initarg :timestamp)))
 
 
 (defmethod button-pressed ((this victory-state) (button (eql :enter)))
@@ -11,7 +12,8 @@
 
 
 (defmethod render ((this victory-state))
-  (with-slots () this
+  (with-slots (timestamp) this
+    (gamekit:draw-text timestamp (gamekit:vec2 370 570))
     (gamekit:with-pushed-canvas ()
       (gamekit:scale-canvas 2 2)
       (gamekit:draw-text "YOU ARE AWESOME" (gamekit:vec2 100 200))

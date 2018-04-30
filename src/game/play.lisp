@@ -24,6 +24,7 @@
    (current-force :initform 0d0)
    (balls :initform nil)
    (level :initform nil)
+   (start-timestamp :initform (current-seconds))
    (camera :initform (make-instance 'camera))))
 
 
@@ -49,7 +50,7 @@
     (absorb-force force-vial)))
 
 
-(defmethod button-pressed ((this level-state) (button (eql :r)))
+#++(defmethod button-pressed ((this level-state) (button (eql :r)))
   (reload-level))
 
 
@@ -81,13 +82,21 @@
   that)
 
 
+(defun format-time (start-timestamp)
+  (let* ((total (floor (- (current-seconds) start-timestamp)))
+         (minutes (floor (/ total 60)))
+         (seconds (mod total 60)))
+    (format nil "~2,'0d:~2,'0d" minutes seconds)))
+
+
 (defmethod pre-collide ((this level-state) this-shape that-shape)
-  (with-slots ((bawl player)) this
+  (with-slots ((bawl player) start-timestamp) this
     (alexandria:if-let ((controller (control-collision-p (ge.phy:shape-substance this-shape)
                                                            (ge.phy:shape-substance that-shape))))
       (if (and (eq (controller-type controller) :line) (= (controller-id controller) #x0000ff))
           (progn
-            (transition-to 'victory-state)
+            (transition-to 'victory-state :timestamp (format-time start-timestamp))
+
             nil)
           t)
       t)))
@@ -117,8 +126,8 @@
 
 
 (defun draw-hud (level-state)
-  (with-slots (force-vial player) level-state
-    (gamekit:draw-text "00:00" (gamekit:vec2 370 570))
+  (with-slots (force-vial player start-timestamp) level-state
+    (gamekit:draw-text (format-time start-timestamp) (gamekit:vec2 370 570))
 
     (let ((meter-len (* 200 (/ (bawl-health player) *max-bawl-health*))))
       (gamekit:draw-text "PATIENCE" (gamekit:vec2 10 10))
