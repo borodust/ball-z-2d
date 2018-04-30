@@ -2,7 +2,7 @@
 
 
 (defparameter *universe-step* 0.014)
-(defparameter *step-split* 4)
+(defparameter *step-split* 10)
 
 
 (gamekit:defgame ball-z-2d ()
@@ -63,7 +63,8 @@
       (%bind-button :mouse-left)
       (%bind-button :enter)
       (%bind-button :escape)
-      (%bind-button :space))))
+      (%bind-button :space)
+      (%bind-button :r))))
 
 
 (defmethod gamekit:act ((this ball-z-2d))

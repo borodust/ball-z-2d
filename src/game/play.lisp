@@ -5,8 +5,17 @@
 ;;;
 
 
-(defvar *level-descriptor-data* (alexandria:read-file-into-string
-                                 (asdf:system-relative-pathname :ball-z-2d "assets/levels/level.svg")))
+(defun load-level-descriptor ()
+  (alexandria:read-file-into-string
+   (asdf:system-relative-pathname :ball-z-2d "assets/levels/level.svg")))
+
+
+(defvar *level-descriptor-data* (load-level-descriptor))
+
+
+(defun reload-level ()
+  (setf *level-descriptor-data* (load-level-descriptor))
+  (transition-to 'level-state))
 
 
 (defclass level-state (game-state)
@@ -38,6 +47,10 @@
 (defmethod button-pressed ((this level-state) (button (eql :space)))
   (with-slots (force-vial) this
     (absorb-force force-vial)))
+
+
+(defmethod button-pressed ((this level-state) (button (eql :r)))
+  (reload-level))
 
 
 (defmethod button-released ((this level-state) (button (eql :space)))
@@ -99,7 +112,7 @@
     (when (bawl-dead-p player)
       (transition-to 'end-state))
     (when (> current-force 0d0)
-      (apply-force player current-force)
+      (apply-force player (* current-force 1.5))
       (setf current-force 0d0))))
 
 

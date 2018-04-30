@@ -1,6 +1,9 @@
 (cl:in-package :ball-z-2d)
 
 
+(declaim (special *level-height*))
+
+
 (defgeneric discard-level-feature (feature)
   (:method (feature) (declare (ignore feature))))
 
@@ -55,8 +58,8 @@
 ;;; OBSTACLES
 ;;;
 (defclass obstacle ()
-  ((stroke-paint :initform (gamekit:vec4 0 0 0 1) :initarg :stroke-paint :reader stroke-paint-of)
-   (shape :initarg :shape)))
+  ((stroke-paint :initform nil :initarg :stroke-paint :reader stroke-paint-of)
+   (shape :initarg :shape :initform nil)))
 
 
 (defgeneric make-obstacle-shape (obstacle &key &allow-other-keys))
@@ -65,12 +68,16 @@
 (defmethod initialize-instance ((this obstacle) &rest args &key (obstacle-p t) &allow-other-keys)
   (apply #'call-next-method this :shape (when obstacle-p
                                           (apply #'make-obstacle-shape this args))
+                                 :stroke-paint (if obstacle-p
+                                                   (gamekit:vec4 0 0 0 1)
+                                                   (gamekit:vec4 0.9 0.9 0.9 1))
          args))
 
 
 (defmethod discard-level-feature ((this obstacle))
   (with-slots (shape) this
-    (ge.ng:dispose shape)))
+    (when shape
+      (ge.ng:dispose shape))))
 
 
 ;;;
@@ -83,8 +90,8 @@
 
 (defmethod make-obstacle-shape ((this line-obstacle) &key origin end)
   (ge.phy:make-segment-shape *universe*
-                             (ge.ng:mult origin *unit-scale*)
-                             (ge.ng:mult end *unit-scale*)))
+                             (mult-by-unit origin)
+                             (mult-by-unit end)))
 
 
 (defmethod render ((this line-obstacle))
@@ -104,9 +111,9 @@
 
 (defmethod make-obstacle-shape ((this rect-obstacle) &key origin width height)
   (ge.phy:make-box-shape *universe*
-                         (/ width *unit-scale*)
-                         (/ height *unit-scale*)
-                         :offset (ge.ng:mult origin *unit-scale*)))
+                         (mult-by-unit width)
+                         (mult-by-unit height)
+                         :offset (mult-by-unit origin)))
 
 
 (defmethod render ((this rect-obstacle))
@@ -132,8 +139,8 @@
 (defmethod render ((this ellipse-obstacle))
   (with-slots (origin x-radius y-radius) this
     (gamekit:draw-ellipse origin x-radius y-radius
-                       :stroke-paint (stroke-paint-of this)
-                       :thickness 5)))
+                          :stroke-paint (stroke-paint-of this)
+                          :thickness 5)))
 
 ;;;
 ;;; PATH
@@ -182,12 +189,12 @@
 
 
 (defun invert-y (number)
-  (- *viewport-height* number))
+  (- *level-height* number))
 
 
 (defun extract-points (object)
   (loop for (x y) across (getf object :point-data)
-        collect (gamekit:vec2 x (invert-y y))))
+        collect (gamekit:vec2 x (+ (invert-y y) *viewport-height*))))
 
 
 (defun parse-feature-type (object)
@@ -206,21 +213,25 @@
               :obstacle)))))
 
 
-(defgeneric infuse-level-feature (name feature-type object level)
-  (:method (name feature-type object level)
+(defgeneric infuse-level-feature (name feature-type object level &key &allow-other-keys)
+  (:method (name feature-type object level &key)
     (error "Unrecognized level ~A: ~A" feature-type name)))
 
 
-(defmethod infuse-level-feature ((name (eql :path)) (type (eql :obstacle)) object level)
+(defmethod infuse-level-feature ((name (eql :path)) (type (eql :obstacle)) object level
+                                 &key (obstacle-p t))
   (let ((obstacle (make-instance 'path-obstacle
-                                 :obstacle-p t
+                                 :obstacle-p obstacle-p
                                  :points (extract-points object))))
     (add-level-feature level obstacle)))
 
 
-(defmethod infuse-level-feature ((name (eql :rect)) (type (eql :obstacle)) object level)
-  (destructuring-bind (&key x y width height &allow-other-keys) object
+(defmethod infuse-level-feature ((name (eql :path)) (type (eql :background)) object level &key)
+  (infuse-level-feature name :obstacle object level :obstacle-p nil))
 
+
+(defmethod infuse-level-feature ((name (eql :rect)) (type (eql :obstacle)) object level &key)
+  (destructuring-bind (&key x y width height &allow-other-keys) object
     (let ((obstacle (make-instance 'rect-obstacle
                                    :obstacle-p t
                                    :origin (gamekit:vec2 (parse-number x)
@@ -230,7 +241,7 @@
       (add-level-feature level obstacle))))
 
 
-(defmethod infuse-level-feature ((name (eql :line)) (type (eql :obstacle)) object level)
+(defmethod infuse-level-feature ((name (eql :line)) (type (eql :obstacle)) object level &key)
   (destructuring-bind (&key x1 y1 x2 y2 &allow-other-keys) object
     (let ((obstacle (make-instance 'line-obstacle
                                    :obstacle-p t
@@ -241,7 +252,7 @@
       (add-level-feature level obstacle))))
 
 
-(defmethod infuse-level-feature ((name (eql :ellipse)) (type (eql :obstacle)) object level)
+(defmethod infuse-level-feature ((name (eql :ellipse)) (type (eql :obstacle)) object level &key)
   (destructuring-bind (&key cx cy rx ry &allow-other-keys) object
     (let ((obstacle (make-instance 'ellipse-obstacle
                                    :obstacle-p t
@@ -253,17 +264,19 @@
       (add-level-feature level obstacle ))))
 
 
-(defmethod infuse-level-feature ((name (eql :circle)) (type (eql :controller)) object level)
+(defmethod infuse-level-feature ((name (eql :ellipse)) (type (eql :controller)) object level &key)
   (destructuring-bind (&key cx cy &allow-other-keys) object
-    (let ((center (gamekit:vec2 (parse-number cx)
-                                (invert-y (parse-number cy)))))
-    (alexandria:switch ((extract-stroke object) :test #'=)
-      (0 (setf (player-spawn-point-of level) center))
-      (#xff0000 (push center (enemy-spawn-points-of level)))))))
+    (let ((center (gamekit:vec2 (parse-number cx) (invert-y (parse-number cy)))))
+      (alexandria:switch ((extract-stroke object) :test #'=)
+        (0 (setf (player-spawn-point-of level) center))
+        (#xff0000 (push center (enemy-spawn-points-of level)))))))
 
 
+(defmethod infuse-level-feature ((name (eql :circle)) (type (eql :controller)) object level &key)
+  (infuse-level-feature :ellipse type object level))
 
-(defmethod infuse-level-feature ((name (eql :line)) (type (eql :controller)) object level)
+
+(defmethod infuse-level-feature ((name (eql :line)) (type (eql :controller)) object level &key)
   (destructuring-bind (&key x1 y1 x2 y2 &allow-other-keys) object
     (let ((controller (make-line-controller (extract-stroke object)
                                             (gamekit:vec2 (parse-number x1)
@@ -291,12 +304,14 @@
           append (list (alexandria:make-keyword (uiop:standard-case-symbol-name name))
                        value))))
 
-(defun init-features (level level-descriptor)
-  (loop for object in level-descriptor
-        do (init-level-feature level (append object (extract-style object)))))
+(defun init-features (level level-descriptor &key height &allow-other-keys)
+  (let ((*level-height* (parse-number height)))
+    (loop for object in level-descriptor
+          do (init-level-feature level (append object (extract-style object))))))
 
 
 (defun load-level (string)
   (let ((level (make-instance 'level)))
-    (init-features level (svgp:parse-svg-string string))
-    level))
+    (multiple-value-bind (elements svg-attribs) (svgp:parse-svg-string string)
+      (apply #'init-features level elements svg-attribs)
+      level)))

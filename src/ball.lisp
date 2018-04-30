@@ -50,7 +50,7 @@
 
 (defmethod render ((this ball))
   (with-slots (radius body color dead-p) this
-    (let ((position (gamekit:div (ge.phy:body-position body) *unit-scale*)))
+    (let ((position (div-by-unit (ge.phy:body-position body))))
       (gamekit:with-pushed-canvas ()
         (gamekit:translate-canvas (gamekit:x position) (gamekit:y position))
         (gamekit:draw-circle *zero-vec2* (/ radius *unit-scale*) :fill-paint color)
@@ -64,7 +64,7 @@
 
 (defparameter *max-bawl-health* 100)
 (defparameter *health-degradation-speed* 10)
-(defparameter *health-restoration-amount* 10)
+(defparameter *health-restoration-amount* 100)
 
 (defclass master-bawl (ball)
   ((health :initform *max-bawl-health*)
@@ -116,7 +116,7 @@
   (with-slots (triangle) this
     (call-next-method this)
     (gamekit:with-pushed-canvas ()
-      (let* ((triangle-pos (gamekit:div (ge.phy:body-position (%body-of this)) *unit-scale*))
+      (let* ((triangle-pos (div-by-unit (ge.phy:body-position (%body-of this))))
              (direction-vec (bawl-direction))
              (triangle-angle (- (atan (gamekit:y direction-vec) (gamekit:x direction-vec)) (/ pi 2))))
         (gamekit:translate-canvas (gamekit:x triangle-pos) (gamekit:y triangle-pos))
