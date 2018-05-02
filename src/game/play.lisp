@@ -108,8 +108,9 @@
                                                           (ge.phy:shape-substance that-shape))))
       (let* ((vel (ge.ng:vector-length
                    (gamekit:add (ge.phy:body-linear-velocity (ball-body bawl))
-                                (ge.phy:body-linear-velocity (ball-body other-ball))))))
-        (when (and (> vel 9) (not (bawl-dead-p bawl)))
+                                (gamekit:mult (ge.phy:body-linear-velocity (ball-body other-ball))
+                                              -1)))))
+        (when (and (> vel 4) (not (bawl-dead-p bawl)))
           (repair-bawl bawl)
           (kill-ball other-ball)
           (log:info "BOOM! ~A" vel))))))
