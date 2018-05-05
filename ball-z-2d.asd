@@ -1,7 +1,7 @@
 (asdf:defsystem :ball-z-2d
   :description "Ball Z: Second Dimension"
   :license "AGPLv3"
-  :version "0.0.1"
+  :version "1.0.4"
   :author "Pavel 'Borodust' Korolev"
   :mailto "dev@borodust.org"
   :depends-on (alexandria split-sequence parse-number cl-svg-polygon
