@@ -24,7 +24,7 @@ to finish the level.
 ## From sources via Quicklisp
 
 ```lisp
-(ql-dist:install-dist "http://bodge.borodust.org/dist/org.borodust.bodge.txt" :prompt nil :replace t)
+(ql-dist:install-dist "http://bodge.borodust.org/dist/org.borodust.bodge.testing.txt" :prompt nil :replace t)
 
 (ql:quickload :ball-z-2d)
 
