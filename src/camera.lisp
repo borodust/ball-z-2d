@@ -16,7 +16,7 @@
            (time-delta (- current-seconds timestamp))
            (target-pos (gamekit:add cursor-offset player-pos *viewport-half*))
            (target-vec (gamekit:subt target-pos current-position))
-           (target-distance (ge.math:vector-length target-vec)))
+           (target-distance (ge.ng:vector-length target-vec)))
       (when (> target-distance 0d0)
         (let ((target-offset (gamekit:mult target-vec
                                            (/ (min (* time-delta *camera-speed* target-distance)
