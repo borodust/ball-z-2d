@@ -82,4 +82,4 @@
 
 
 (defun run ()
-  (gamekit:start 'ball-z-2d))
+  (gamekit:start 'ball-z-2d :swap-interval 1))
